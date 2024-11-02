@@ -54,7 +54,7 @@ Here we see the user input area for entering the CAPTCHA text.
 
 ![WhatsApp Image 2024-11-02 at 16 27 48_429971d5](https://github.com/user-attachments/assets/ac316c1f-fc5b-4de5-b570-72cd3aa8fb5d)
 
-This image demonstrates the voice confirmation feature when an incorrect CAPTCHA is entered.
+This image shows the final form.
 
 # Diagrams
 ![WhatsApp Image 2024-11-02 at 16 31 37_90302054](https://github.com/user-attachments/assets/90774bbb-324d-4747-8822-1abc924475eb)
