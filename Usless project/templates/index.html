@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crazy CAPTCHA</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #ffe5e5; text-align: center; }
+        .captcha-container { margin-top: 50px; padding: 20px; border: 2px solid #ff6f61; background-color: #fff; display: inline-block; }
+        #captcha-image { margin-bottom: 20px; }
+        button { padding: 10px 20px; background-color: #ff6f61; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #ff4c3b; }
+        .hint { color: #ff6347; }
+    </style>
+</head>
+<body>
+    <div class="captcha-container">
+        <h2>Enter CAPTCHA</h2>
+        <img id="captcha-image" src="/generate_captcha" alt="Captcha Image">
+        <br>
+        <input type="text" id="captcha-input" placeholder="Enter CAPTCHA Text" required>
+        <button onclick="submitCaptcha()">Submit</button>
+        <p id="result"></p>
+        <p class="hint" id="hint"></p>
+        <button onclick="showHint()">More Help</button>
+    </div>
+
+    <script>
+        let captchaText = ""; // This will hold the CAPTCHA text
+        
+        // Function to handle CAPTCHA submission
+        function submitCaptcha() {
+            const captchaInput = document.getElementById('captcha-input').value;
+            const resultElement = document.getElementById('result');
+            const hintElement = document.getElementById('hint');
+            
+            fetch('/validate_captcha', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `captcha_input=${captchaInput}&captcha_text=${captchaText}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    resultElement.textContent = "Captcha Correct!";
+                    resultElement.style.color = "green";
+                } else {
+                    resultElement.textContent = data.message;
+                    resultElement.style.color = "red";
+                    document.getElementById('captcha-image').src = '/generate_captcha?' + new Date().getTime(); // Refresh CAPTCHA image
+                    captchaText = data.captcha_text; // Update the CAPTCHA text for the next check
+                }
+            });
+        }
+
+        // Fetch the CAPTCHA image and set the text
+        function fetchCaptcha() {
+            fetch('/generate_captcha')
+                .then(response => response.blob())
+                .then(image => {
+                    const imageUrl = URL.createObjectURL(image);
+                    document.getElementById('captcha-image').src = imageUrl;
+                });
+        }
+
+        // Show Morse code hint (example hint, could be modified)
+        function showHint() {
+            document.getElementById('hint').textContent = "Hint: Use the Morse code for letters in the CAPTCHA.";
+        }
+
+        // Initialize CAPTCHA text and image
+        window.onload = function() {
+            fetchCaptcha();
+        };
+    </script>
+</body>
+</html>
